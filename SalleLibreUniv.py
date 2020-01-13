@@ -27,7 +27,11 @@ date = "datetime.datetime.now().strftime("%Y-%m-%d")
 
 def home():
     '''
-    Flemme de commenter ;)
+    Cette partie télécharge le fichier ADE du jour.(fichier au format .ics .Format de données pour les échanges de données de calendrier)
+    Arguments:
+        None.
+    Retour:
+        :--bool (si l'opération c'est bien passée ou non)
     '''
     global date
     global salle
@@ -39,7 +43,8 @@ def home():
         print("Erreur : Echec téléchargement base ADE !")
         return False
     print("\tTéléchargement effectué")
-    baseADE = r.data.decode('utf-8').replace("\r","") #baseADE_fichier.read()
+
+    baseADE = r.data.decode('utf-8').replace("\r","")
     tmpsalle = ""
     tmpDeb=""
     tmpFin=""
@@ -47,9 +52,12 @@ def home():
     tailleLo=len("LOCATION:")
     taillestart=len("DTSTART:")
     tailleEnd=len("DTEND:")
+
     for i in range(len(baseADE)-taillestart):
         if "DTSTART:" == baseADE[i:i+taillestart]:
             i+=taillestart
+
+            #recupere l'heure de commencement du cours
             while baseADE[i] != '\n':
                 tmp+=baseADE[i]
                 i+=1
@@ -57,14 +65,16 @@ def home():
 
             tmp=""
             i+=tailleEnd+1
+
+            #recupere l'heure de fin du cours
             while baseADE[i] != '\n':
                 tmp+=baseADE[i]
                 i+=1
             tmpFin=str(int(tmp[9:11])+1).zfill(2)+"h"+tmp[11:13]
 
+            #salle
             while "LOCATION:" != baseADE[i:i+tailleLo]:
-                i+=1
-            
+                i+=1 
             i+=tailleLo
             while baseADE[i] != '\n':
                 tmpsalle+=baseADE[i]
@@ -75,20 +85,33 @@ def home():
             tmpFin=""
             tmp=""
             tmpsalle=""
-    #baseADE_fichier.close()
     triHoraire()
     return True
 
 def ajouteSalle(tmpDeb, tmpFin, tmpSalle):
+    '''
+    Fonction qui ajoute au tableau salle(global), le numéro de salle, l'heure de début et de fin.
+    Arguments:
+        tmpDeb : --str heure de début du cours dans la salle
+        tmpFin : --str heure de fin du cours dans la salle
+        tmpSalle : --str nom de salle (G310, S25, ...)
+    Retour:
+        True : --bool.
+    '''
     for i in range(len(salle)):
         if salle[i][0] == tmpSalle:
-            #salle[i][1] += tmpDeb+" - "+tmpFin+'\n'
             salle[i][1].append(tmpDeb+" - "+tmpFin)
             return True
     salle.append([tmpSalle,[tmpDeb+" - "+tmpFin]])
     return True
 
 def afficheSalles():
+    '''Fonction qui affiche toutes les salles occupées, avec les horaires d'occupation.
+    Arguments:
+        None.
+    Retour:
+        None.
+    '''
     for i in range(len(salle)):
         print(salle[i][0],":")
         for j in range(len(salle[i][1])):
@@ -96,11 +119,23 @@ def afficheSalles():
         print()
 
 def triHoraire():
+    '''Fonction qui trie les horaires en fonction des salles du tableau salle(global).
+    Arguments:
+        None.
+    Retour:
+        None.
+    '''
     for i in range(len(salle)):
         salle[i][1].sort()
 
 
 def affichageSalle(nomsalle):
+    '''Fonction qui affiche la salle donnée en argument, si celle-ci existe.
+    Arguments:
+        -nomsalle : --str (nom de la salle)
+    Retour:
+        --bool (retourne si la salle existe ou non)
+    '''
     for i in range(len(salle)):
         if salle[i][0] == nomsalle:
             print(salle[i][0],":")
@@ -110,6 +145,13 @@ def affichageSalle(nomsalle):
     return False
 
 def menu():
+    '''
+    Fonction qui affiche un petit demandant le nom de la salle.
+    Arguments:
+        None.
+    Retour:
+        None.
+    '''
     print("\n\nNom de la salle (ex: G310, S25) : ", end="")
     nomsalle = input()
     print("\n\n")
@@ -122,6 +164,8 @@ def menu():
     return True
 
 def main():
+    '''Fonction principale, qui n'est pas rangée XD.
+    '''
     global date
     print("\t##################################################")
     print("\t## Affiche les créneaux d'occupation des salles ##")
