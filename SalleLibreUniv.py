@@ -23,7 +23,7 @@ import urllib3
 
 #Variable global = c'est le mal ;)
 salle = []
-date = "datetime.datetime.now().strftime("%Y-%m-%d")
+date = datetime.datetime.now().strftime("%Y-%m-%d")
 
 def home():
     '''
