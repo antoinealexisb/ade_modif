@@ -23,7 +23,7 @@ import urllib3
 
 #Variable global = c'est le mal ;)
 salle = []
-date = datetime.datetime.now().strftime("%Y-%m-%d")
+date = "2020-01-17"#datetime.datetime.now().strftime("%Y-%m-%d")
 
 def home():
     '''
@@ -52,6 +52,9 @@ def home():
     tailleLo=len("LOCATION:")
     taillestart=len("DTSTART:")
     tailleEnd=len("DTEND:")
+    tailleDescription=len("DESCRIPTION:")
+    tailleExport=len("Exporté")
+    j=0
 
     for i in range(len(baseADE)-taillestart):
         if "DTSTART:" == baseADE[i:i+taillestart]:
@@ -71,6 +74,7 @@ def home():
                 tmp+=baseADE[i]
                 i+=1
             tmpFin=str(int(tmp[9:11])+1).zfill(2)+"h"+tmp[11:13]
+            tmp=""
 
             #salle
             while "LOCATION:" != baseADE[i:i+tailleLo]:
@@ -80,7 +84,16 @@ def home():
                 tmpsalle+=baseADE[i]
                 i+=1
 
-            ajouteSalle(tmpDeb, tmpFin, tmpsalle)
+            while "DESCRIPTION:" != baseADE[i:i+tailleDescription]:
+                i+=1
+            i+=tailleDescription
+            while baseADE[i:i+4] != 'UID:':
+                tmp+=baseADE[i]
+                i+=1
+            prof=tmp.replace('\n ',"").split("Exporté")[0].split("\\n")[-2].split(" ")[0]
+
+            for nameSalle in tmpsalle.split("\\,"):
+                ajouteSalle(tmpDeb, tmpFin, nameSalle,prof)
             tmpDeb=""
             tmpFin=""
             tmp=""
@@ -88,21 +101,22 @@ def home():
     triHoraire()
     return True
 
-def ajouteSalle(tmpDeb, tmpFin, tmpSalle):
+def ajouteSalle(tmpDeb, tmpFin, tmpSalle, prof):
     '''
     Fonction qui ajoute au tableau salle(global), le numéro de salle, l'heure de début et de fin.
     Arguments:
         tmpDeb : --str heure de début du cours dans la salle
         tmpFin : --str heure de fin du cours dans la salle
         tmpSalle : --str nom de salle (G310, S25, ...)
+        prof : --str nom du prof (Glorian, Lheureux, ...) [s'il n'y a pas de prof problème ??]
     Retour:
         True : --bool.
     '''
     for i in range(len(salle)):
         if salle[i][0] == tmpSalle:
-            salle[i][1].append(tmpDeb+" - "+tmpFin)
+            salle[i][1].append(tmpDeb+" - "+tmpFin+"  :  "+prof)
             return True
-    salle.append([tmpSalle,[tmpDeb+" - "+tmpFin]])
+    salle.append([tmpSalle,[tmpDeb+" - "+tmpFin+"  :  "+prof]])
     return True
 
 def afficheSalles():
