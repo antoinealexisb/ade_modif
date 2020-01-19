@@ -20,10 +20,12 @@ __date__= '07/01/2020'
 #Importation des librairies.
 import datetime
 import urllib3
+import numpy as np
 
 #Variable global = c'est le mal ;)
 salle = []
-date = "2020-01-17"#datetime.datetime.now().strftime("%Y-%m-%d")
+edtProf = []
+date = "2020-01-22"#datetime.datetime.now().strftime("%Y-%m-%d")
 
 def home():
     '''
@@ -35,7 +37,9 @@ def home():
     '''
     global date
     global salle
+    global edtProf
     salle = []
+    edtProf = []
     print("Téléchargement de la base ADE pour le semestre pair, année 2019 (jour : "+date+")")
     http = urllib3.PoolManager()
     r = http.request('GET', 'http://ade-consult.univ-artois.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?resources=8005&projectId=1&calType=ical&firstDate='+date+'&lastDate='+date+'&data=02427bf08a4e3905df54e3828781966417a0456235d61df4705fb52a51c95d7ffb650adbf17b96d5d97cc32ac608bd134bd92253eb85eb8cc5b140158eb150a876ea41bc176608f34b0dc0eb3d0541420d219a8a2811502431d44fcc2bedcd5766fe1467ca6773eda8418747eceeea208fc8eaca54c53c509dc2134dcd161ba64a660cb94c969a7630feed39799f89a9f0f26b2783481751a1bc422e85df36640812d1b6fab9bafa2230f703ec4296da,1')
@@ -94,6 +98,7 @@ def home():
 
             for nameSalle in tmpsalle.split("\\,"):
                 ajouteSalle(tmpDeb, tmpFin, nameSalle,prof)
+                ajouteProf(tmpDeb, tmpFin, nameSalle, prof)
             tmpDeb=""
             tmpFin=""
             tmp=""
@@ -118,6 +123,7 @@ def ajouteSalle(tmpDeb, tmpFin, tmpSalle, prof):
             return True
     salle.append([tmpSalle,[tmpDeb+" - "+tmpFin+"  :  "+prof]])
     return True
+    
 
 def afficheSalles():
     '''Fonction qui affiche toutes les salles occupées, avec les horaires d'occupation.
@@ -141,6 +147,8 @@ def triHoraire():
     '''
     for i in range(len(salle)):
         salle[i][1].sort()
+    for i in range(len(edtProf)):
+        edtProf[i][1].sort()
 
 
 def affichageSalle(nomsalle):
@@ -158,6 +166,92 @@ def affichageSalle(nomsalle):
             return True
     return False
 
+def ajouteProf(tmpDeb, tmpFin, tmpSalle, prof):
+    '''
+    Fonction qui ajoute au tableau edtProfs(global), le nom du prof, l'heure de début, de fin et la salle.
+    Arguments:
+        tmpDeb : --str heure de début du cours dans la salle
+        tmpFin : --str heure de fin du cours dans la salle
+        tmpSalle : --str nom de salle (G310, S25, ...)
+        prof : --str nom du prof (Glorian, Lheureux, ...) [s'il n'y a pas de prof problème ??]
+    Retour:
+        True : --bool.
+    '''
+    for i in range(len(edtProf)):
+        if edtProf[i][0] == prof:
+            edtProf[i][1].append(tmpDeb+" - "+tmpFin+"  :  "+tmpSalle)
+            return True
+    edtProf.append([prof,[tmpDeb+" - "+tmpFin+"  :  "+tmpSalle]])
+    return True
+
+def afficheProfs():
+    '''Fonction qui affiche touts les prof, avec les horaires et salles.
+    Arguments:
+        None.
+    Retour:
+        None.
+    '''
+    for i in range(len(edtProf)):
+        print(edtProf[i][0],":")
+        for j in range(len(edtProf[i][1])):
+            print("\t",edtProf[i][1][j])
+        print()
+
+def affichageProf(nomProf):
+    '''Fonction qui affiche la salle donnée en argument, si celle-ci existe.
+    Arguments:
+        -nomProf : --str (nom de la salle)
+    Retour:
+        --bool (retourne si la salle existe ou non)
+    '''
+    for i in range(len(edtProf)):
+        if edtProf[i][0] == nomProf:
+            print(edtProf[i][0],":")
+            for j in range(len(edtProf[i][1])):
+                print("\t",edtProf[i][1][j])
+            return True
+    return False
+
+def levenshtein(seq1, seq2):
+    size_x = len(seq1) + 1
+    size_y = len(seq2) + 1
+    matrix = np.zeros ((size_x, size_y))
+    for x in range(size_x):
+        matrix [x, 0] = x
+    for y in range(size_y):
+        matrix [0, y] = y
+
+    for x in range(1, size_x):
+        for y in range(1, size_y):
+            if seq1[x-1] == seq2[y-1]:
+                matrix [x,y] = min(
+                    matrix[x-1, y] + 1,
+                    matrix[x-1, y-1],
+                    matrix[x, y-1] + 1
+                )
+            else:
+                matrix [x,y] = min(
+                    matrix[x-1,y] + 1,
+                    matrix[x-1,y-1] + 1,
+                    matrix[x,y-1] + 1
+                )
+    return (matrix[size_x - 1, size_y - 1])
+
+def profverif(name):
+    name = name.upper()
+    inf5 = []
+    infInd = []
+    for i in range(len(edtProf)):
+        tmp = levenshtein(name, edtProf[i][0].upper())
+        if tmp < 5:
+            inf5.append(tmp)
+            infInd.append(i)
+    if len(inf5) == 0:
+        return False
+    affichageProf(edtProf[infInd[np.argmin(inf5)]][0])
+    return True
+
+
 def menu():
     '''
     Fonction qui affiche un petit demandant le nom de la salle.
@@ -172,7 +266,13 @@ def menu():
     if nomsalle == "all":
         afficheSalles()
         return True
-    if not affichageSalle(nomsalle):
+    if nomsalle == "prof":
+        nomsalle = input("Mettre nom du prof : ")
+        if nomsalle == "all":
+            afficheProfs()
+        elif not profverif(nomsalle):
+            print("Prof non reconnu.")
+    elif not affichageSalle(nomsalle):
         print("Erreur : La salle n'est pas dans le fichier !")
         return False
     return True
