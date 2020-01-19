@@ -25,7 +25,7 @@ import numpy as np
 #Variable global = c'est le mal ;)
 salle = []
 edtProf = []
-date = "2020-01-22"#datetime.datetime.now().strftime("%Y-%m-%d")
+date = datetime.datetime.now().strftime("%Y-%m-%d")
 
 def home():
     '''
