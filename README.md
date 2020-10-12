@@ -1,7 +1,4 @@
-# Pour s'amuser
+# Plugin ADE
 
-[![pipeline status](https://gitlab.univ-artois.fr/enseignements-rwa/coo/tp/badges/master/pipeline.svg)]((https://gitlab.univ-artois.fr/antoine-alexis_bourdon/sallelibreuniv/tp/)commits/master)
-
-Ce projet permet de connaitre les créneaux d'occupation des salles de cours de la faculté des sciences de Lens. (en prenant la date du jour)
-
-(La version bot discord permet de choisir le jour.)
+Ce projet permet d'avoir accès aux salles, aux emplois de temps des professeurs et aux emplois du temps classiques de l'Université d'Artois.  
+Il existe deux versions du plugins une pour chrome et l'autre pour firefox.
