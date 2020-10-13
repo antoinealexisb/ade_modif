@@ -1,4 +1,13 @@
-# Plugin ADE
+# Description
+Ce projet à pour objectif de fournir plus d’options au site [ADE](http://ade-consult.univ-artois.fr) par le moyen de plugins via TamperMonkey(chrome) et GreaseMonkey(firefox).
 
-Ce projet permet d'avoir accès aux salles, aux emplois de temps des professeurs et aux emplois du temps classiques de l'Université d'Artois.  
-Il existe deux versions du plugins une pour chrome et l'autre pour firefox.
+# Modules
+-	La recherche : V
+-	Salles : V
+-	Emplois du temps : V
+-	Profs : V
+-	Bannière option :  
+o	Exportation (pdf) : X  
+o	Exportation (Icalendar) : X  
+o	Exportation (RSS) : X  
+o	Configuration affichage : X
