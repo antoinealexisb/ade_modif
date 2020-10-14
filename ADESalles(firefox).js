@@ -1,10 +1,18 @@
 // ==UserScript==
 // @name           ADESalles
-// @version        1.0.1
+// @version        1.0.2
 // @author         Antoine-Alexis BOURDON
 // @license        GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @include				 http://ade-consult.univ-artois.fr/*
 // ==/UserScript==
+
+
+var nom = window.document.URL;
+
+if (nom.includes("myplanning.jsp")){
+    window.location.replace("http://ade-consult.univ-artois.fr/direct/index.jsp");
+}
+
 
 
 realProcess = function(xhr) {
