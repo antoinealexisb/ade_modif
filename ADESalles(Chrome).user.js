@@ -1,11 +1,18 @@
 // ==UserScript==
 // @name           ADESalles(Chrome)
-// @version        1.0.1
+// @version        1.0.2
 // @author         Antoine-Alexis BOURDON
 // @license        GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @include        http://ade-consult.univ-artois.fr/*
-// @Description    Beaucoup de changement. Les boutons ne sont plus là. La recherche fonctionne aussi.
+// @Description    Cette version à des boutons :D
 // ==/UserScript==
+
+var nom = window.document.URL;
+
+if (nom.includes("myplanning.jsp")){
+    window.location.replace("http://ade-consult.univ-artois.fr/direct/index.jsp");
+}
+
 
 var open_prototype = XMLHttpRequest.prototype.open,
 intercept_response = function(urlpattern, callback) {
