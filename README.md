@@ -7,7 +7,7 @@ Ce projet à pour objectif de fournir plus d’options au site [ADE](http://ade-
 -	Emplois du temps : V
 -	Profs : V
 -	Bannière option :  
-o	Exportation (pdf) : X  
-o	Exportation (Icalendar) : X  
-o	Exportation (RSS) : X  
-o	Configuration affichage : X
+o	Exportation (pdf) : V  
+o	Exportation (Icalendar) : V  
+o	Exportation (RSS) : V  
+o	Configuration affichage : V
