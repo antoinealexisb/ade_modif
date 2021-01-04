@@ -1,16 +1,17 @@
 // ==UserScript==
 // @name           ADESalles
-// @version        1.0.2
+// @version        1.0.4
 // @author         Antoine-Alexis BOURDON
 // @license        GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @include				 http://ade-consult.univ-artois.fr/*
+// @Description    Version 1.0.4, la 3 ajoute la redirection sur l'edt M1 , la 4 met le display sur etudiants par défaut
 // ==/UserScript==
 
 
 var nom = window.document.URL;
 
 if (nom.includes("myplanning.jsp")){
-    window.location.replace("http://ade-consult.univ-artois.fr/direct/index.jsp");
+    window.location.replace("http://ade-consult.univ-artois.fr/direct/index.jsp?resources=9085,9465&displayConfName=ETUDIANTS-ENT");
 }
 
 
